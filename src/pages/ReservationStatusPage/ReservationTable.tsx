@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { useState } from 'react';
+import { createContext, useContext, useState, type ReactNode } from 'react';
 import { Text } from '_tosslib/components';
 import { colors } from '../../_tosslib/constants/colors';
 import { Reservation } from '../../_tosslib/server/types';
@@ -10,17 +10,30 @@ import { EQUIPMENT_LABELS } from './consts';
  * 추상화 근거:
  * 1. 스타일 코드등으로 인해 스크롤이 길어지고, Header나 Body 코드가 멀어짐 -> 첫 코드를 보고 "이게 예약 테이블인가?"를 알기 어려웠음
  * 2. "예약" 서비스인데, 예약 현황을 보여주는 UI는 핵심이라고 생각함 -> "예약 테이블"UI 는 핵심컴포넌트로서, 자주 사용/수정될 것이라고 생각함
+ * 3. from/to, activeId를 Context로 공유하여 props 중복 전달을 제거하고, 테이블 전체에서 하나의 툴팁만 활성화되도록 보장
  */
-const Header = ({
-  from = 9,
-  to = 20,
-  render,
-}: {
-  from?: number;
-  to?: number;
-  render?: (hour: number) => React.ReactNode;
-}) => {
+
+type ReservationTableContextValue = {
+  from: number;
+  to: number;
+  activeId: string | null;
+  setActiveId: (id: string | null) => void;
+};
+
+const Root = ({ from = 9, to = 20, children }: { from?: number; to?: number; children: ReactNode }) => {
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  return (
+    <ReservationTableContext.Provider value={{ from, to, activeId, setActiveId }}>
+      {children}
+    </ReservationTableContext.Provider>
+  );
+};
+
+const Header = ({ render }: { render?: (hour: number) => ReactNode }) => {
+  const { from, to } = useReservationTable();
   const hourColumns = Array.from({ length: to - from + 1 }, (_, i) => from + i);
+
   return (
     <div
       css={css`
@@ -84,15 +97,8 @@ function timeToMinutes(time: string, timelineStart: number): number {
   return (h - timelineStart) * 60 + m;
 }
 
-type ReservationTableRowProps = {
-  label: string;
-  reservations: Reservation[];
-  from?: number;
-  to?: number;
-};
-
-const Row = ({ label, reservations, from = 9, to = 20 }: ReservationTableRowProps) => {
-  const [activeId, setActiveId] = useState<string | null>(null);
+const Row = ({ label, reservations }: { label: string; reservations: Reservation[] }) => {
+  const { from, to, activeId, setActiveId } = useReservationTable();
   const totalMinutes = (to - from) * 60;
 
   return (
@@ -202,9 +208,20 @@ const Row = ({ label, reservations, from = 9, to = 20 }: ReservationTableRowProp
   );
 };
 
+const ReservationTableContext = createContext<ReservationTableContextValue | null>(null);
+
+function useReservationTable() {
+  const ctx = useContext(ReservationTableContext);
+  if (ctx === null) {
+    throw new Error('ReservationTable.Header/Row must be used within ReservationTable.Root');
+  }
+  return ctx;
+}
+
 export const ReservationTable = Object.assign(
   {},
   {
+    Root,
     Header,
     Row,
   }

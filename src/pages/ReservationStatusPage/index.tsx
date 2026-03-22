@@ -101,28 +101,22 @@ export function ReservationStatusPage() {
             padding: 16px;
           `}
         >
-          {/* 시간 헤더 */}
-          <ReservationTable.Header from={TIMELINE_START} to={TIMELINE_END} />
-
-          {/* 회의실별 타임라인 */}
-          {rooms.map((room: { id: string; name: string }, index: number) => {
-            const roomReservations = reservations.filter((r: { roomId: string }) => r.roomId === room.id);
-            return (
-              <div
-                key={room.id}
-                css={css`
-                  ${index > 0 ? 'margin-top: 4px;' : ''}
-                `}
-              >
-                <ReservationTable.Row
-                  label={room.name}
-                  reservations={roomReservations}
-                  from={TIMELINE_START}
-                  to={TIMELINE_END}
-                />
-              </div>
-            );
-          })}
+          <ReservationTable.Root from={TIMELINE_START} to={TIMELINE_END}>
+            <ReservationTable.Header />
+            {rooms.map((room, index) => {
+              const roomReservations = reservations.filter(reservation => reservation.roomId === room.id);
+              return (
+                <div
+                  key={room.id}
+                  css={css`
+                    ${index > 0 ? 'margin-top: 4px;' : ''}
+                  `}
+                >
+                  <ReservationTable.Row label={room.name} reservations={roomReservations} />
+                </div>
+              );
+            })}
+          </ReservationTable.Root>
         </div>
       </div>
 
