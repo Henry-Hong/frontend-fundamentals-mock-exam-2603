@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Top, Spacing, Border, Button, Text, ListRow } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
+import DateInput from 'components/DateInput';
 import { getRooms, getReservations, getMyReservations, cancelReservation } from 'remotes/remotes';
 
 const EQUIPMENT_LABELS: Record<string, string> = {
@@ -117,30 +118,11 @@ export function ReservationStatusPage() {
             gap: 6px;
           `}
         >
-          <input
-            type="date"
+          <DateInput
             value={date}
             min={formatDate(new Date())}
             onChange={e => setDate(e.target.value)}
             aria-label="날짜"
-            css={css`
-              box-sizing: border-box;
-              font-size: 16px;
-              font-weight: 500;
-              line-height: 1.5;
-              height: 48px;
-              background-color: ${colors.grey50};
-              border-radius: 12px;
-              color: ${colors.grey800};
-              width: 100%;
-              border: 1px solid ${colors.grey200};
-              padding: 0 16px;
-              outline: none;
-              transition: border-color 0.15s;
-              &:focus {
-                border-color: ${colors.blue500};
-              }
-            `}
           />
         </div>
       </div>
