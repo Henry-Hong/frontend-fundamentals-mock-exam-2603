@@ -33,7 +33,7 @@ export const TypedQueryByPath = {
     endTime: z.string().optional(),
     attendees: z.coerce.number().optional(),
     equipment: z.array(z.string()).optional(),
-    floor: z.coerce.number().optional(),
+    floor: z.string().optional(),
   }),
 } as const;
 
