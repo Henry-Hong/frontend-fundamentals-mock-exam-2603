@@ -1,6 +1,9 @@
 import { css } from '@emotion/react';
+import { useState } from 'react';
 import { Text } from '_tosslib/components';
 import { colors } from '../../_tosslib/constants/colors';
+import { Reservation } from '../../_tosslib/server/types';
+import { EQUIPMENT_LABELS } from './consts';
 
 /**
  * Thoughts.
@@ -70,14 +73,139 @@ const Header = ({
   );
 };
 
-const Body = ({}) => {
-  return <></>;
+/**
+ * Thoughts.
+ * 추상화 근거:
+ * 1. 회의실별 Row 렌더링 로직(라벨 + 타임라인 바 + 툴팁)이 반복되며 index.tsx를 비대하게 만듦
+ * 2. Row는 Header와 동일한 from/to 타임라인 범위를 공유하므로, 같은 컴포넌트 그룹으로 응집시킴
+ */
+function timeToMinutes(time: string, timelineStart: number): number {
+  const [h, m] = time.split(':').map(Number);
+  return (h - timelineStart) * 60 + m;
+}
+
+type ReservationTableRowProps = {
+  label: string;
+  reservations: Reservation[];
+  from?: number;
+  to?: number;
+};
+
+const Row = ({ label, reservations, from = 9, to = 20 }: ReservationTableRowProps) => {
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const totalMinutes = (to - from) * 60;
+
+  return (
+    <div
+      css={css`
+        display: flex;
+        align-items: center;
+        height: 32px;
+      `}
+    >
+      <div
+        css={css`
+          width: 80px;
+          flex-shrink: 0;
+          padding-right: 8px;
+        `}
+      >
+        <Text
+          typography="t7"
+          fontWeight="medium"
+          color={colors.grey700}
+          ellipsisAfterLines={1}
+          css={css`
+            font-size: 12px;
+          `}
+        >
+          {label}
+        </Text>
+      </div>
+      <div
+        css={css`
+          flex: 1;
+          height: 24px;
+          background: ${colors.white};
+          border-radius: 6px;
+          position: relative;
+          overflow: visible;
+        `}
+      >
+        {reservations.map(reservation => {
+          const left = (timeToMinutes(reservation.start, from) / totalMinutes) * 100;
+          const width =
+            ((timeToMinutes(reservation.end, from) - timeToMinutes(reservation.start, from)) / totalMinutes) * 100;
+          const isActive = activeId === reservation.id;
+
+          return (
+            <div
+              key={reservation.id}
+              css={css`
+                position: absolute;
+                left: ${left}%;
+                width: ${width}%;
+                height: 100%;
+              `}
+            >
+              <div
+                role="button"
+                aria-label={`${label} ${reservation.start}-${reservation.end} 예약 상세`}
+                onClick={() => setActiveId(isActive ? null : reservation.id)}
+                css={css`
+                  width: 100%;
+                  height: 100%;
+                  background: ${colors.blue400};
+                  border-radius: 4px;
+                  opacity: ${isActive ? 1 : 0.75};
+                  cursor: pointer;
+                  transition: opacity 0.15s;
+                  &:hover {
+                    opacity: 1;
+                  }
+                `}
+              />
+              {isActive && (
+                <div
+                  role="tooltip"
+                  css={css`
+                    position: absolute;
+                    top: 100%;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    margin-top: 6px;
+                    background: ${colors.grey900};
+                    color: ${colors.white};
+                    padding: 8px 12px;
+                    border-radius: 8px;
+                    font-size: 12px;
+                    white-space: nowrap;
+                    z-index: 10;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+                    line-height: 1.6;
+                  `}
+                >
+                  <div>
+                    {reservation.start} ~ {reservation.end}
+                  </div>
+                  <div>{reservation.attendees}명</div>
+                  {reservation.equipment.length > 0 && (
+                    <div>{reservation.equipment.map(e => EQUIPMENT_LABELS[e]).join(', ')}</div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 };
 
 export const ReservationTable = Object.assign(
   {},
   {
     Header,
-    Body,
+    Row,
   }
 );
