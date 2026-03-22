@@ -10,6 +10,7 @@ import { getRooms, getReservations } from 'remotes/remotes';
 import { LoadingFallback } from '../../components/LoadingFallback';
 import { EQUIPMENT_LABELS } from './consts';
 import { MyReservationList } from './MyReservationList';
+import { ReservationTable } from './ReservationTable';
 
 const TIME_SLOTS: string[] = [];
 for (let h = 9; h <= 20; h++) {
@@ -119,49 +120,7 @@ export function ReservationStatusPage() {
           `}
         >
           {/* 시간 헤더 */}
-          <div
-            css={css`
-              display: flex;
-              align-items: flex-end;
-              margin-bottom: 8px;
-            `}
-          >
-            <div
-              css={css`
-                width: 80px;
-                flex-shrink: 0;
-                padding-right: 8px;
-              `}
-            />
-            <div
-              css={css`
-                flex: 1;
-                position: relative;
-                height: 18px;
-              `}
-            >
-              {HOUR_LABELS.map(t => {
-                const left = (timeToMinutes(t) / TOTAL_MINUTES) * 100;
-                return (
-                  <Text
-                    key={t}
-                    typography="t7"
-                    fontWeight="regular"
-                    color={colors.grey400}
-                    css={css`
-                      position: absolute;
-                      left: ${left}%;
-                      transform: translateX(-50%);
-                      font-size: 10px;
-                      letter-spacing: -0.3px;
-                    `}
-                  >
-                    {t.slice(0, 2)}
-                  </Text>
-                );
-              })}
-            </div>
-          </div>
+          <ReservationTable.Header from={TIMELINE_START} to={TIMELINE_END} />
 
           {/* 회의실별 타임라인 */}
           {rooms.map((room: { id: string; name: string }, index: number) => {
