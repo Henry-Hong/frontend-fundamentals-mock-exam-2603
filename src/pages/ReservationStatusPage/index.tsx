@@ -1,18 +1,13 @@
 import { css } from '@emotion/react';
 import { Suspense, useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
 import { Top, Spacing, Border, Button, Text } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
 import DateInput from 'components/DateInput';
 import { format } from 'date-fns';
-import { getRooms, getReservations } from 'remotes/remotes';
 import { LoadingFallback } from '../../components/LoadingFallback';
 import { MyReservationList } from './MyReservationList';
-import { ReservationTable } from './ReservationTable';
-
-const TIMELINE_START = 9;
-const TIMELINE_END = 20;
+import { ReservationTableContainer } from './ReservationTableContainer';
 
 export function ReservationStatusPage() {
   const navigate = useNavigate();
@@ -29,11 +24,6 @@ export function ReservationStatusPage() {
       window.history.replaceState({}, '');
     }
   }, [locationState]);
-
-  const { data: rooms = [] } = useQuery(['rooms'], getRooms);
-  const { data: reservations = [] } = useQuery(['reservations', date], () => getReservations(date), {
-    enabled: !!date,
-  });
 
   return (
     <div
@@ -94,30 +84,17 @@ export function ReservationStatusPage() {
         </Text>
         <Spacing size={16} />
 
-        <div
-          css={css`
-            background: ${colors.grey50};
-            border-radius: 14px;
-            padding: 16px;
-          `}
-        >
-          <ReservationTable.Root from={TIMELINE_START} to={TIMELINE_END}>
-            <ReservationTable.Header />
-            {rooms.map((room, index) => {
-              const roomReservations = reservations.filter(reservation => reservation.roomId === room.id);
-              return (
-                <div
-                  key={room.id}
-                  css={css`
-                    ${index > 0 ? 'margin-top: 4px;' : ''}
-                  `}
-                >
-                  <ReservationTable.Row label={room.name} reservations={roomReservations} />
-                </div>
-              );
-            })}
-          </ReservationTable.Root>
-        </div>
+        <Suspense fallback={<LoadingFallback text="예약 현황을 불러오는 중입니다..." />}>
+          <div
+            css={css`
+              background: ${colors.grey50};
+              border-radius: 14px;
+              padding: 16px;
+            `}
+          >
+            <ReservationTableContainer date={date} />
+          </div>
+        </Suspense>
       </div>
 
       <Spacing size={24} />

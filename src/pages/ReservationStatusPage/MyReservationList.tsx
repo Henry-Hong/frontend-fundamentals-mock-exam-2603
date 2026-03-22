@@ -3,7 +3,12 @@ import { useMutation, useQueryClient, useSuspenseQueries } from '@tanstack/react
 import { Spacing, Button, Text, ListRow } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
 import { cancelReservation } from 'remotes/remotes';
-import { myReservationListQueryOptions, reservationsQueryOptions, roomsQueryOptions } from './queryOptions';
+import {
+  myReservationListQueryOptions,
+  MY_RESERVATIONS_QUERY_KEY,
+  RESERVATIONS_QUERY_KEY,
+  roomsQueryOptions,
+} from './queryOptions';
 import { Reservation } from '../../_tosslib/server/types';
 import { EQUIPMENT_LABELS } from './consts';
 
@@ -12,13 +17,13 @@ export const MyReservationList = ({ onCancel }: { onCancel: (isSuccess: boolean)
 
   // Question: MyReservationList인데 왜 rooms를 가져오는지 의구심이 들지 않을까?
   const [{ data: myReservationList }, { data: rooms }] = useSuspenseQueries({
-    queries: [myReservationListQueryOptions, roomsQueryOptions],
+    queries: [myReservationListQueryOptions(), roomsQueryOptions()],
   });
 
   const cancelMutation = useMutation((id: string) => cancelReservation(id), {
     onSuccess: () => {
-      queryClient.invalidateQueries(reservationsQueryOptions.queryKey);
-      queryClient.invalidateQueries(myReservationListQueryOptions.queryKey);
+      queryClient.invalidateQueries(RESERVATIONS_QUERY_KEY);
+      queryClient.invalidateQueries(MY_RESERVATIONS_QUERY_KEY);
     },
   });
 
