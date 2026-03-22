@@ -1,4 +1,4 @@
-import { http } from 'pages/http';
+import { http } from 'remotes/http';
 
 export function getRooms() {
   return http.get<{ id: string; name: string; floor: number; capacity: number; equipment: string[] }[]>('/api/rooms');
