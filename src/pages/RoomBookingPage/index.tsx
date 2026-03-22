@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Top, Spacing, Border, Button, Text, Select, ListRow } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
+import { format } from 'date-fns';
 import DateInput from 'components/DateInput';
 import { getRooms, getReservations, createReservation } from 'remotes/remotes';
 import axios from 'axios';
@@ -25,19 +26,12 @@ for (let h = 9; h <= 20; h++) {
   }
 }
 
-function formatDate(date: Date): string {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
-}
-
 export function RoomBookingPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [date, setDate] = useState(searchParams.get('date') || formatDate(new Date()));
+  const [date, setDate] = useState(searchParams.get('date') || format(new Date(), 'yyyy-MM-dd'));
   const [startTime, setStartTime] = useState(searchParams.get('startTime') || '');
   const [endTime, setEndTime] = useState(searchParams.get('endTime') || '');
   const [attendees, setAttendees] = useState(Number(searchParams.get('attendees')) || 1);
@@ -247,7 +241,7 @@ export function RoomBookingPage() {
           </Text>
           <DateInput
             value={date}
-            min={formatDate(new Date())}
+            min={format(new Date(), 'yyyy-MM-dd')}
             onChange={e => {
               setDate(e.target.value);
               handleFilterChange();

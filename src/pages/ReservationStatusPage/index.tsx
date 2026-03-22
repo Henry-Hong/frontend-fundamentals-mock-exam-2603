@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Top, Spacing, Border, Button, Text, ListRow } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
 import DateInput from 'components/DateInput';
+import { format } from 'date-fns';
 import { getRooms, getReservations, getMyReservations, cancelReservation } from 'remotes/remotes';
 
 const EQUIPMENT_LABELS: Record<string, string> = {
@@ -27,13 +28,6 @@ const TIMELINE_START = 9;
 const TIMELINE_END = 20;
 const TOTAL_MINUTES = (TIMELINE_END - TIMELINE_START) * 60;
 
-function formatDate(date: Date): string {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
-}
-
 function timeToMinutes(time: string): number {
   const [h, m] = time.split(':').map(Number);
   return (h - TIMELINE_START) * 60 + m;
@@ -43,7 +37,7 @@ export function ReservationStatusPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
-  const [date, setDate] = useState(formatDate(new Date()));
+  const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
 
   const locationState = location.state as { message?: string } | null;
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(
@@ -120,7 +114,7 @@ export function ReservationStatusPage() {
         >
           <DateInput
             value={date}
-            min={formatDate(new Date())}
+            min={format(new Date(), 'yyyy-MM-dd')}
             onChange={e => setDate(e.target.value)}
             aria-label="날짜"
           />
