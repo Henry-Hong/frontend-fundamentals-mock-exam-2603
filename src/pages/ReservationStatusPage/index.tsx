@@ -19,6 +19,11 @@ export function ReservationStatusPage() {
     locationState?.message ? { type: 'success', text: locationState.message } : null
   );
 
+  /**
+   * Question:
+   * 다른 페이지에서 넘어온 스테이트에서 메시지가 있을 경우, "한번만" 보여준다는 코드 같은데,
+   * useEffect만 봤었을땐, 그런 의도가 잘 느껴지진 않는다
+   */
   useEffect(() => {
     if (locationState?.message) {
       window.history.replaceState({}, '');

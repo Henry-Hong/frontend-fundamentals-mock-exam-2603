@@ -3,7 +3,8 @@ import { createContext, useContext, useState, type ReactNode } from 'react';
 import { Text } from '_tosslib/components';
 import { colors } from '../../_tosslib/constants/colors';
 import { Reservation } from '../../_tosslib/server/types';
-import { EQUIPMENT_LABELS } from './consts';
+import { EQUIPMENT_LABELS } from '../../consts';
+import { isEquipment } from 'utils/index';
 
 /**
  * Thoughts.
@@ -196,7 +197,12 @@ const Row = ({ label, reservations }: { label: string; reservations: Reservation
                   </div>
                   <div>{reservation.attendees}명</div>
                   {reservation.equipment.length > 0 && (
-                    <div>{reservation.equipment.map(e => EQUIPMENT_LABELS[e]).join(', ')}</div>
+                    <div>
+                      {reservation.equipment
+                        .filter(isEquipment)
+                        .map(e => EQUIPMENT_LABELS[e])
+                        .join(', ')}
+                    </div>
                   )}
                 </div>
               )}

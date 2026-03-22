@@ -10,7 +10,8 @@ import {
   roomsQueryOptions,
 } from './queryOptions';
 import { Reservation } from '../../_tosslib/server/types';
-import { EQUIPMENT_LABELS } from './consts';
+import { EQUIPMENT_LABELS } from '../../consts';
+import { isEquipment } from 'utils';
 
 export const MyReservationList = ({ onCancel }: { onCancel: (isSuccess: boolean) => void }) => {
   const queryClient = useQueryClient();
@@ -124,6 +125,9 @@ export const MyReservationList = ({ onCancel }: { onCancel: (isSuccess: boolean)
  */
 const getFullReservationDescription = (reservation: Reservation) => {
   return `${reservation.date} ${reservation.start}~${reservation.end} · ${reservation.attendees}명 · ${
-    reservation.equipment.map(equipment => EQUIPMENT_LABELS[equipment]).join(', ') || '장비 없음'
+    reservation.equipment
+      .filter(isEquipment)
+      .map(equipment => EQUIPMENT_LABELS[equipment])
+      .join(', ') || '장비 없음'
   }`;
 };

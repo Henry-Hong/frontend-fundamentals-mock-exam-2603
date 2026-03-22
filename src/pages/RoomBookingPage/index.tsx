@@ -8,15 +8,8 @@ import { format } from 'date-fns';
 import DateInput from 'components/DateInput';
 import { getRooms, getReservations, createReservation } from 'remotes/remotes';
 import axios from 'axios';
-
-const EQUIPMENT_LABELS: Record<string, string> = {
-  tv: 'TV',
-  whiteboard: '화이트보드',
-  video: '화상장비',
-  speaker: '스피커',
-};
-
-const ALL_EQUIPMENT = ['tv', 'whiteboard', 'video', 'speaker'];
+import { ALL_EQUIPMENT, EQUIPMENT_LABELS } from '../../consts';
+import { isEquipment } from 'utils/index';
 
 const TIME_SLOTS: string[] = [];
 for (let h = 9; h <= 20; h++) {
@@ -537,7 +530,8 @@ export function RoomBookingPage() {
                             top={room.name}
                             topProps={{ typography: 't6', fontWeight: 'bold', color: colors.grey900 }}
                             bottom={`${room.floor}층 · ${room.capacity}명 · ${room.equipment
-                              .map((e: string) => EQUIPMENT_LABELS[e])
+                              .filter(isEquipment)
+                              .map(eq => EQUIPMENT_LABELS[eq])
                               .join(', ')}`}
                             bottomProps={{ typography: 't7', color: colors.grey600 }}
                           />
