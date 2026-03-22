@@ -1,6 +1,5 @@
 import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Top, Spacing, Border, Button, Text, Select, ListRow } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
@@ -10,6 +9,8 @@ import { getRooms, getReservations, createReservation } from 'remotes/remotes';
 import axios from 'axios';
 import { ALL_EQUIPMENT, EQUIPMENT_LABELS } from '../../consts';
 import { isEquipment } from 'utils/index';
+import { useTypedRouter } from 'hooks/useTypedRouter';
+import { useTypedSearchParams } from 'hooks/useTypedSearchParams';
 
 const TIME_SLOTS: string[] = [];
 for (let h = 9; h <= 20; h++) {
@@ -20,34 +21,30 @@ for (let h = 9; h <= 20; h++) {
 }
 
 export function RoomBookingPage() {
-  const navigate = useNavigate();
+  const router = useTypedRouter();
   const queryClient = useQueryClient();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const searchParams = useTypedSearchParams('/booking');
 
-  const [date, setDate] = useState(searchParams.get('date') || format(new Date(), 'yyyy-MM-dd'));
-  const [startTime, setStartTime] = useState(searchParams.get('startTime') || '');
-  const [endTime, setEndTime] = useState(searchParams.get('endTime') || '');
-  const [attendees, setAttendees] = useState(Number(searchParams.get('attendees')) || 1);
-  const [equipment, setEquipment] = useState<string[]>(
-    searchParams.get('equipment') ? searchParams.get('equipment')!.split(',').filter(Boolean) : []
-  );
-  const [preferredFloor, setPreferredFloor] = useState<number | null>(
-    searchParams.get('floor') ? Number(searchParams.get('floor')) : null
-  );
+  const [date, setDate] = useState(searchParams.date || format(new Date(), 'yyyy-MM-dd'));
+  const [startTime, setStartTime] = useState(searchParams.startTime || '');
+  const [endTime, setEndTime] = useState(searchParams.endTime || '');
+  const [attendees, setAttendees] = useState(searchParams.attendees || 1);
+  const [equipment, setEquipment] = useState<string[]>(searchParams.equipment || []);
+  const [preferredFloor, setPreferredFloor] = useState<number | null>(searchParams.floor ?? null);
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // URL 쿼리 파라미터 동기화
   useEffect(() => {
-    const params: Record<string, string> = {};
-    if (date) params.date = date;
-    if (startTime) params.startTime = startTime;
-    if (endTime) params.endTime = endTime;
-    if (attendees > 1) params.attendees = String(attendees);
-    if (equipment.length > 0) params.equipment = equipment.join(',');
-    if (preferredFloor !== null) params.floor = String(preferredFloor);
-    setSearchParams(params, { replace: true });
-  }, [date, startTime, endTime, attendees, equipment, preferredFloor, setSearchParams]);
+    router.replace('/booking', {
+      date: date || undefined,
+      startTime: startTime || undefined,
+      endTime: endTime || undefined,
+      attendees: attendees > 1 ? attendees : undefined,
+      equipment: equipment.length > 0 ? equipment : undefined,
+      floor: preferredFloor ?? undefined,
+    });
+  }, [date, startTime, endTime, attendees, equipment, preferredFloor, router]);
 
   const { data: rooms = [] } = useQuery(['rooms'], getRooms);
   const { data: reservations = [] } = useQuery(['reservations', date], () => getReservations(date), {
@@ -126,7 +123,7 @@ export function RoomBookingPage() {
       });
 
       if ('ok' in result && result.ok) {
-        navigate('/', { state: { message: '예약이 완료되었습니다!' } });
+        router.push('/', { message: '예약이 완료되었습니다!' });
         return;
       }
 
@@ -158,7 +155,7 @@ export function RoomBookingPage() {
       >
         <button
           type="button"
-          onClick={() => navigate('/')}
+          onClick={() => router.push('/')}
           aria-label="뒤로가기"
           css={css`
             background: none;

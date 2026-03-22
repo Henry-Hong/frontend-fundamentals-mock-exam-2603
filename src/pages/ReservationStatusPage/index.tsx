@@ -1,6 +1,5 @@
 import { css } from '@emotion/react';
 import { Suspense, useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { Top, Spacing, Border, Button, Text } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
 import DateInput from 'components/DateInput';
@@ -8,15 +7,16 @@ import { format } from 'date-fns';
 import { LoadingFallback } from '../../components/LoadingFallback';
 import { MyReservationList } from './MyReservationList';
 import { ReservationTableContainer } from './ReservationTableContainer';
+import { useTypedRouter } from 'hooks/useTypedRouter';
+import { useTypedSearchParams } from 'hooks/useTypedSearchParams';
 
 export function ReservationStatusPage() {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useTypedRouter();
+  const searchParams = useTypedSearchParams('/');
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
 
-  const locationState = location.state as { message?: string } | null;
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(
-    locationState?.message ? { type: 'success', text: locationState.message } : null
+    searchParams.message ? { type: 'success', text: searchParams.message } : null
   );
 
   /**
@@ -25,10 +25,10 @@ export function ReservationStatusPage() {
    * useEffect만 봤었을땐, 그런 의도가 잘 느껴지진 않는다
    */
   useEffect(() => {
-    if (locationState?.message) {
-      window.history.replaceState({}, '');
+    if (searchParams.message) {
+      router.replace('/');
     }
-  }, [locationState]);
+  }, [searchParams.message, router]);
 
   return (
     <div
@@ -164,7 +164,7 @@ export function ReservationStatusPage() {
           padding: 0 24px;
         `}
       >
-        <Button display="full" onClick={() => navigate('/booking')}>
+        <Button display="full" onClick={() => router.push('/booking')}>
           예약하기
         </Button>
       </div>
