@@ -1,9 +1,10 @@
 import { css } from '@emotion/react';
+import { ComponentPropsWithoutRef, forwardRef } from 'react';
 import { colors } from '_tosslib/constants/colors';
 
-type Props = JSX.IntrinsicElements['select'];
+type Props = ComponentPropsWithoutRef<'select'> & { className?: string };
 
-const Select = ({ className, ...rest }: Props) => {
+const Select = forwardRef<HTMLSelectElement, Props>(({ className, ...rest }, ref) => {
   return (
     <div
       className={className}
@@ -12,6 +13,7 @@ const Select = ({ className, ...rest }: Props) => {
       `}
     >
       <select
+        ref={ref}
         {...rest}
         css={css`
           font-size: 16px;
@@ -45,6 +47,7 @@ const Select = ({ className, ...rest }: Props) => {
       />
     </div>
   );
-};
+});
+Select.displayName = 'Select';
 
 export default Select;
