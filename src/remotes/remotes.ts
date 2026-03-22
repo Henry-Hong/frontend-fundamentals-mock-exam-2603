@@ -1,4 +1,5 @@
 import { http } from 'remotes/http';
+import { Reservation } from '../_tosslib/server/types';
 
 export function getRooms() {
   return http.get<{ id: string; name: string; floor: number; capacity: number; equipment: string[] }[]>('/api/rooms');
@@ -25,9 +26,7 @@ export function createReservation(data: {
 }
 
 export function getMyReservations() {
-  return http.get<
-    { id: string; roomId: string; date: string; start: string; end: string; attendees: number; equipment: string[] }[]
-  >('/api/my-reservations');
+  return http.get<Reservation[]>('/api/my-reservations');
 }
 
 export function cancelReservation(id: string) {
