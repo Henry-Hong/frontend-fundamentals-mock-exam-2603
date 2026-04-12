@@ -1,0 +1,382 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1774184029855,
+  "projectRoot": "/Users/user/playground/frontend-fundamentals-mock-exam-2603",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      },
+      {
+        "name": "TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "tsconfig.json"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "react",
+        "version": "17.0.1",
+        "category": "frontend"
+      },
+      {
+        "name": "react-dom",
+        "version": "17.0.1",
+        "category": "frontend"
+      },
+      {
+        "name": "vite",
+        "version": "5.1.0",
+        "category": "build"
+      },
+      {
+        "name": "vitest",
+        "version": "4.0.18",
+        "category": "testing"
+      }
+    ],
+    "packageManager": "yarn",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": "yarn build",
+    "testCommand": "yarn test",
+    "lintCommand": null,
+    "devCommand": "yarn dev",
+    "scripts": {
+      "dev": "vite",
+      "start": "vite",
+      "build": "tsc && vite build",
+      "preview": "vite preview",
+      "test": "vitest run",
+      "test:watch": "vitest"
+    }
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "docs",
+      "public",
+      "src"
+    ],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "docs": {
+      "path": "docs",
+      "purpose": "Documentation",
+      "fileCount": 1,
+      "lastAccessed": 1774184029840,
+      "keyFiles": [
+        "requirements.md"
+      ]
+    },
+    "public": {
+      "path": "public",
+      "purpose": "Public files",
+      "fileCount": 2,
+      "lastAccessed": 1774184029841,
+      "keyFiles": [
+        "manifest.json",
+        "mockServiceWorker.js"
+      ]
+    },
+    "src": {
+      "path": "src",
+      "purpose": "Source code",
+      "fileCount": 8,
+      "lastAccessed": 1774184029847,
+      "keyFiles": [
+        "App.easy.spec.tsx",
+        "App.hard.spec.tsx",
+        "App.tsx",
+        "GlobalPortal.tsx",
+        "index.css"
+      ]
+    },
+    "src/pages": {
+      "path": "src/pages",
+      "purpose": "Page components",
+      "fileCount": 2,
+      "lastAccessed": 1774184029848,
+      "keyFiles": [
+        "PageLayout.tsx",
+        "Routes.tsx"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "src/pages/RoomBookingPage/index.tsx",
+      "accessCount": 72,
+      "lastAccessed": 1774199980494,
+      "type": "file"
+    },
+    {
+      "path": "src/pages/ReservationStatusPage/index.tsx",
+      "accessCount": 32,
+      "lastAccessed": 1774195388942,
+      "type": "file"
+    },
+    {
+      "path": "src/pages/ReservationStatusPage/ReservationTable.tsx",
+      "accessCount": 17,
+      "lastAccessed": 1774195396435,
+      "type": "file"
+    },
+    {
+      "path": "src/pages/ReservationStatusPage/MyReservationList.tsx",
+      "accessCount": 15,
+      "lastAccessed": 1774195389139,
+      "type": "file"
+    },
+    {
+      "path": "src/pages/RoomBookingPage/useBookingForm.ts",
+      "accessCount": 10,
+      "lastAccessed": 1774199979885,
+      "type": "file"
+    },
+    {
+      "path": "src/pages/ReservationStatusPage/queryOptions.ts",
+      "accessCount": 8,
+      "lastAccessed": 1774195392171,
+      "type": "file"
+    },
+    {
+      "path": "src/remotes/remotes.ts",
+      "accessCount": 8,
+      "lastAccessed": 1774196698837,
+      "type": "file"
+    },
+    {
+      "path": "src/components/DateInput.tsx",
+      "accessCount": 7,
+      "lastAccessed": 1774197663169,
+      "type": "file"
+    },
+    {
+      "path": "src/consts/index.ts",
+      "accessCount": 6,
+      "lastAccessed": 1774196698387,
+      "type": "file"
+    },
+    {
+      "path": "src/_tosslib/components/Select.tsx",
+      "accessCount": 6,
+      "lastAccessed": 1774196800200,
+      "type": "file"
+    },
+    {
+      "path": "src/_tosslib/server/types.ts",
+      "accessCount": 5,
+      "lastAccessed": 1774195407893,
+      "type": "file"
+    },
+    {
+      "path": "src/hooks/useTypedSearchParams.ts",
+      "accessCount": 5,
+      "lastAccessed": 1774196698131,
+      "type": "file"
+    },
+    {
+      "path": "package.json",
+      "accessCount": 4,
+      "lastAccessed": 1774195379394,
+      "type": "file"
+    },
+    {
+      "path": "src/pages/Routes.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1774195382107,
+      "type": "file"
+    },
+    {
+      "path": "src/pages/ReservationStatusPage/ReservationTableContainer.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1774195396396,
+      "type": "file"
+    },
+    {
+      "path": "src/hooks/useTypedRouter.ts",
+      "accessCount": 4,
+      "lastAccessed": 1774198099658,
+      "type": "file"
+    },
+    {
+      "path": "src",
+      "accessCount": 3,
+      "lastAccessed": 1774191755712,
+      "type": "directory"
+    },
+    {
+      "path": "src/hooks/useRouter.ts",
+      "accessCount": 3,
+      "lastAccessed": 1774194419768,
+      "type": "file"
+    },
+    {
+      "path": "src/App.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1774195382480,
+      "type": "file"
+    },
+    {
+      "path": "src/remotes/http.ts",
+      "accessCount": 3,
+      "lastAccessed": 1774195392594,
+      "type": "file"
+    },
+    {
+      "path": "src/index.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1774195405588,
+      "type": "file"
+    },
+    {
+      "path": "src/components/RadioInput.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1774198915438,
+      "type": "file"
+    },
+    {
+      "path": "src/_tosslib/components/BigInput.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1774184159607,
+      "type": "file"
+    },
+    {
+      "path": "src/pages/ReservationStatusPage/consts.ts",
+      "accessCount": 2,
+      "lastAccessed": 1774191393736,
+      "type": "file"
+    },
+    {
+      "path": "src/pages/PageLayout.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1774195389640,
+      "type": "file"
+    },
+    {
+      "path": "src/utils/index.ts",
+      "accessCount": 2,
+      "lastAccessed": 1774195405140,
+      "type": "file"
+    },
+    {
+      "path": "src/_tosslib/components/Button.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1774196880986,
+      "type": "file"
+    },
+    {
+      "path": "docs/react-hook-form-tips.md",
+      "accessCount": 2,
+      "lastAccessed": 1774201124621,
+      "type": "file"
+    },
+    {
+      "path": "",
+      "accessCount": 1,
+      "lastAccessed": 1774184128410,
+      "type": "directory"
+    },
+    {
+      "path": "src/_tosslib/components/index.ts",
+      "accessCount": 1,
+      "lastAccessed": 1774184132344,
+      "type": "file"
+    },
+    {
+      "path": "src/_tosslib/components/TextArea.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774184135849,
+      "type": "file"
+    },
+    {
+      "path": "src/_tosslib/components/Radio.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774184136263,
+      "type": "file"
+    },
+    {
+      "path": "src/_tosslib/constants/colors.ts",
+      "accessCount": 1,
+      "lastAccessed": 1774184140917,
+      "type": "file"
+    },
+    {
+      "path": "src/remotes",
+      "accessCount": 1,
+      "lastAccessed": 1774190114390,
+      "type": "directory"
+    },
+    {
+      "path": "src/_tosslib/server/handlers.ts",
+      "accessCount": 1,
+      "lastAccessed": 1774191394347,
+      "type": "file"
+    },
+    {
+      "path": "src/_tosslib/server/data/rooms.ts",
+      "accessCount": 1,
+      "lastAccessed": 1774191397281,
+      "type": "file"
+    },
+    {
+      "path": "vite.config.ts",
+      "accessCount": 1,
+      "lastAccessed": 1774193791734,
+      "type": "file"
+    },
+    {
+      "path": "tsconfig.json",
+      "accessCount": 1,
+      "lastAccessed": 1774193830682,
+      "type": "file"
+    },
+    {
+      "path": "src/_tosslib/components",
+      "accessCount": 1,
+      "lastAccessed": 1774196739054,
+      "type": "directory"
+    },
+    {
+      "path": "src/components/NumberInput.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774197667850,
+      "type": "file"
+    },
+    {
+      "path": "src/components/CheckboxInput.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774198587005,
+      "type": "file"
+    },
+    {
+      "path": "docs/migration-state-to-react-hook-form.md",
+      "accessCount": 1,
+      "lastAccessed": 1774201206319,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}
