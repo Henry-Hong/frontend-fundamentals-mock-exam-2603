@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
-import { Suspense, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { Top, Spacing, Border, Button, Text } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
 import DateInput from 'components/DateInput';
@@ -11,25 +12,8 @@ import { useTypedRouter } from 'hooks/useTypedRouter';
 import { useTypedSearchParams } from 'hooks/useTypedSearchParams';
 
 export function ReservationStatusPage() {
-  const router = useTypedRouter();
-  const searchParams = useTypedSearchParams('/');
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
-
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(
-    searchParams.message ? { type: 'success', text: searchParams.message } : null
-  );
-
-  /**
-   * Question:
-   * 다른 페이지에서 넘어온 스테이트에서 메시지가 있을 경우, "한번만" 보여준다는 코드 같은데,
-   * useEffect만 봤었을땐, 그런 의도가 잘 느껴지진 않는다
-   */
-  useEffect(() => {
-    if (searchParams.message) {
-      router.replace('/');
-    }
-  }, [searchParams.message, router]);
-
+  const [message, setMessage] = useMessageFromSearchParams();
   return (
     <div
       css={css`
@@ -65,6 +49,18 @@ export function ReservationStatusPage() {
             gap: 6px;
           `}
         >
+          {/* 고민 : date 랑 setDate가 선언부랑 너무 떨어져있지 않나?
+          
+          떨어져 있는 이유 : 상단의 컴포넌트 코드들
+          그렇다면, 이거 컴포넌트화 한다음, 내부에서 처리 해도 좋지 않을까? 
+
+          근데 그러면 결국 날짜 정보를 예약현황 페이지컴포넌트에서 제거한다는건데,,, 그러면 ReservationTable 에서 사용하는걸 알기 어려워 지잖아
+          props 라는게 어쩌면 어떤것에 의존하는지를 명확하게 보여주는 단서이기 때문에, 좋지아니한가
+
+          나는 그럼 결국 date state 를 강조하고 싶은건데, 눈에 띄는 다른 코드들이 보인다 예를들어 router, searchParams, useEffect, message 등
+
+          얘네들을 없애는게 관건이 될듯
+          */}
           <DateInput
             value={date}
             min={format(new Date(), 'yyyy-MM-dd')}
@@ -107,33 +103,7 @@ export function ReservationStatusPage() {
       <Spacing size={24} />
 
       {/* 메시지 배너 */}
-      {message && (
-        <div
-          css={css`
-            padding: 0 24px;
-          `}
-        >
-          <div
-            css={css`
-              padding: 10px 14px;
-              border-radius: 10px;
-              background: ${message.type === 'success' ? colors.blue50 : colors.red50};
-              display: flex;
-              align-items: center;
-              gap: 8px;
-            `}
-          >
-            <Text
-              typography="t7"
-              fontWeight="medium"
-              color={message.type === 'success' ? colors.blue600 : colors.red500}
-            >
-              {message.text}
-            </Text>
-          </div>
-          <Spacing size={12} />
-        </div>
-      )}
+      {message && <MessageBanner message={message} />}
 
       {/* 내 예약 목록 */}
       <div
@@ -159,16 +129,93 @@ export function ReservationStatusPage() {
       <Spacing size={24} />
 
       {/* 예약하기 버튼 */}
-      <div
-        css={css`
-          padding: 0 24px;
-        `}
-      >
-        <Button display="full" onClick={() => router.push('/booking')}>
-          예약하기
-        </Button>
-      </div>
+      <BookingButton />
+
       <Spacing size={24} />
     </div>
   );
 }
+
+/**
+ * useMessage 라는 커스텀 훅을 만들어 볼까?
+ * - 단순한 추출이 되지 않으려면.. 어떻게 해야할까
+ * - 첫번째로 고려할건 "재사용성"인것 같다.
+ *
+ * 아니 그전에 왜 useMessage 라는 커스텀 훅을 만들어보고 싶어한걸까?
+ * - 첫번째로, searchParameter에서 받아온 값을 처리하는 로직이 복잡함
+ * - 두번째로, 그다음에 replace 하는 로직이 복잡함
+ * 이정도?
+ *
+ * 근데 이렇게 하면..
+ * 1. searchParameter로 모두 처리한다고 오해하지않을까?
+ * - searchParams 쓰는건 알겠는데; setMessage 하면 searchParameter 도 바뀌는걸로 이해하지 않을까?
+ * - 싀바 어렵네;
+ * - 그러면 이대로면,,
+ *
+ * 2. message / setMessage가 정의한곳과 소비한곳이 멀어지는것 같다?
+ */
+
+const useMessageFromSearchParams = () => {
+  const location = useLocation();
+  const router = useTypedRouter();
+  const _message = new URLSearchParams(location.search).get('message');
+
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(
+    _message ? { type: 'success', text: _message } : null
+  );
+
+  useEffect(() => {
+    if (message) {
+      router.replace('/');
+    }
+  }, [location.search, router]);
+
+  return useMemo(() => [message, setMessage] as const, [message, setMessage]);
+};
+
+/**
+ * BookingButton만 쓰면, 무조건 예약하기 가능
+ * 이건 단순 추출이 아님
+ * 모든 예약은 BookingPage 에서 이뤄짐
+ * 개발자 입장에서는 BookingButton만 사용하면됨
+ */
+const BookingButton = () => {
+  const router = useTypedRouter();
+  return (
+    <div
+      css={css`
+        padding: 0 24px;
+      `}
+    >
+      <Button display="full" onClick={() => router.push('/booking')}>
+        예약하기
+      </Button>
+    </div>
+  );
+};
+
+const MessageBanner = ({ message }: { message: { type: 'success' | 'error'; text: string } }) => {
+  return (
+    <div
+      css={css`
+        padding: 0 24px;
+      `}
+    >
+      <div
+        css={css`
+          padding: 10px 14px;
+          border-radius: 10px;
+          background: ${message.type === 'success' ? colors.blue50 : colors.red50};
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        `}
+      >
+        <Text typography="t7" fontWeight="medium" color={message.type === 'success' ? colors.blue600 : colors.red500}>
+          {message.text}
+        </Text>
+      </div>
+      <Spacing size={12} />
+    </div>
+  );
+};
