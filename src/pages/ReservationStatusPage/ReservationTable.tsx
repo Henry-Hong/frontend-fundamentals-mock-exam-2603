@@ -26,7 +26,15 @@ const Root = ({ from = 9, to = 20, children }: { from?: number; to?: number; chi
 
   return (
     <ReservationTableContext.Provider value={{ from, to, activeId, setActiveId }}>
-      {children}
+      <div
+        css={css`
+          background: ${colors.grey50};
+          border-radius: 14px;
+          padding: 16px;
+        `}
+      >
+        {children}
+      </div>
     </ReservationTableContext.Provider>
   );
 };

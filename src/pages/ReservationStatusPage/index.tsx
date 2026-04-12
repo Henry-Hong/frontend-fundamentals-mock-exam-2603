@@ -42,14 +42,7 @@ export function ReservationStatusPage() {
           날짜 선택
         </Text>
         <Spacing size={16} />
-        <div
-          css={css`
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-          `}
-        >
-          {/* 고민 : date 랑 setDate가 선언부랑 너무 떨어져있지 않나?
+        {/* 고민 : date 랑 setDate가 선언부랑 너무 떨어져있지 않나?
           
           떨어져 있는 이유 : 상단의 컴포넌트 코드들
           그렇다면, 이거 컴포넌트화 한다음, 내부에서 처리 해도 좋지 않을까? 
@@ -61,13 +54,12 @@ export function ReservationStatusPage() {
 
           얘네들을 없애는게 관건이 될듯
           */}
-          <DateInput
-            value={date}
-            min={format(new Date(), 'yyyy-MM-dd')}
-            onChange={e => setDate(e.target.value)}
-            aria-label="날짜"
-          />
-        </div>
+        <DateInput
+          value={date}
+          min={format(new Date(), 'yyyy-MM-dd')}
+          onChange={e => setDate(e.target.value)}
+          aria-label="날짜"
+        />
       </div>
 
       <Spacing size={24} />
@@ -86,15 +78,7 @@ export function ReservationStatusPage() {
         <Spacing size={16} />
 
         <Suspense fallback={<LoadingFallback text="예약 현황을 불러오는 중입니다..." />}>
-          <div
-            css={css`
-              background: ${colors.grey50};
-              border-radius: 14px;
-              padding: 16px;
-            `}
-          >
-            <ReservationTableContainer date={date} />
-          </div>
+          <ReservationTableContainer date={date} />
         </Suspense>
       </div>
 
