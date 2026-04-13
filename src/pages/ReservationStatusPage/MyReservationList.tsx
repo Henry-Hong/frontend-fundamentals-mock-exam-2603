@@ -16,10 +16,14 @@ import { isEquipment } from 'utils';
 export const MyReservationList = ({ onCancel }: { onCancel: (isSuccess: boolean) => void }) => {
   const queryClient = useQueryClient();
 
-  // Question: MyReservationList인데 왜 rooms를 가져오는지 의구심이 들지 않을까?
+  // Question: MyReservationList인데 왜 rooms를 가져오는지 의구심이 들지 않을까? -> 바로 derived state 정의
   const [{ data: myReservationList }, { data: rooms }] = useSuspenseQueries({
     queries: [myReservationListQueryOptions(), roomsQueryOptions()],
   });
+  const myReservationListWithRoomName = myReservationList.map(reservation => ({
+    ...reservation,
+    roomName: rooms.find(room => room.id === reservation.roomId)?.name ?? reservation.roomId,
+  }));
 
   const cancelMutation = useMutation((id: string) => cancelReservation(id), {
     onSuccess: () => {
@@ -40,15 +44,15 @@ export const MyReservationList = ({ onCancel }: { onCancel: (isSuccess: boolean)
         <Text typography="t5" fontWeight="bold" color={colors.grey900}>
           내 예약
         </Text>
-        {myReservationList.length > 0 && (
+        {myReservationListWithRoomName.length > 0 && (
           <Text typography="t7" fontWeight="medium" color={colors.grey500}>
-            {myReservationList.length}건
+            {myReservationListWithRoomName.length}건
           </Text>
         )}
       </div>
       <Spacing size={16} />
 
-      {myReservationList.length === 0 ? (
+      {myReservationListWithRoomName.length === 0 ? (
         <div
           css={css`
             padding: 40px 0;
@@ -69,7 +73,7 @@ export const MyReservationList = ({ onCancel }: { onCancel: (isSuccess: boolean)
             gap: 10px;
           `}
         >
-          {myReservationList.map(reservation => (
+          {myReservationListWithRoomName.map(reservation => (
             <div
               key={reservation.id}
               css={css`
@@ -82,7 +86,7 @@ export const MyReservationList = ({ onCancel }: { onCancel: (isSuccess: boolean)
               <ListRow
                 contents={
                   <ListRow.Text2Rows
-                    top={rooms.find(room => room.id === reservation.roomId)?.name ?? reservation.roomId}
+                    top={reservation.roomName}
                     bottom={getFullReservationDescription(reservation)}
                     topProps={{ typography: 't6', fontWeight: 'bold', color: colors.grey900 }}
                     bottomProps={{ typography: 't7', color: colors.grey600 }}
